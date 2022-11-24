@@ -3,7 +3,7 @@ import React from 'react';
 
 const SecondaryText = ({children}) => {
     return (
-        <h4 className="text-lg text-secondary font-bold">{children}</h4>
+        <span className="text-lg text-secondary font-bold">{children}</span>
     );
 };
 
