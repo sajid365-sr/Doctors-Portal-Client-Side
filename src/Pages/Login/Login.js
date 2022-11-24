@@ -1,12 +1,24 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../contexts/AuthProvider";
 
 const Login = () => {
   const { register, formState:{ errors }, handleSubmit } = useForm();
-  
+  const {signIn} = useContext(AuthContext);
+  const [loginError, setLoginError] = useState('');
+
   const handleLogin = data =>{
-      console.log(data)
+     const {email, password} = data;
+    setLoginError('');
+     signIn(email, password)
+     .then((result) => {
+         const user = result.user;
+         console.log(user);
+     })
+     .catch(err => {
+        setLoginError(err.message) 
+        console.error(err)});
   }
 
   return (
@@ -33,7 +45,7 @@ const Login = () => {
             <label className="label"> <Link className="label-text mb-4 text-blue-600 text-sm">Forgot Password ?</Link> </label> 
             {errors.password && <p className="text-error" role="alert">{errors.password?.message}</p>}        
           </div>
-
+            {loginError && <span className="text-error">{loginError}</span>}
          
           <input className="btn btn-accent w-full" value='Login' type="submit" />
         </form>

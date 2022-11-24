@@ -1,14 +1,40 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import {useForm} from 'react-hook-form';
+import { useForm } from "react-hook-form";
+import { AuthContext } from "../../contexts/AuthProvider";
+import toast from "react-hot-toast";
 
 const SignUp = () => {
+  const { createUser, updateUser } = useContext(AuthContext);
+  const [signUpError, setSignUpError] = useState("");
 
-const {register, handleSubmit, formState: {errors}} = useForm();
-const handleSignUP = (data) =>{
-    console.log(data)
-}
-
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const handleSignUP = (data) => {
+    const { name, email, password } = data;
+    setSignUpError("");
+    createUser(email, password)
+      .then((result) => {
+        const user = result.user;
+        console.log(user);
+        if (user) {
+          toast.success("User created successfully");
+        }
+        const userInfo = {
+          displayName: name,
+        };
+        updateUser(userInfo)
+          .then(() => {})
+          .catch((err) => {
+            setSignUpError(err.message);
+            console.error(err);
+          });
+      })
+      .catch((err) => console.error(err));
+  };
 
   return (
     <div className="h-[800px]  flex justify-center items-center">
@@ -23,7 +49,7 @@ const handleSignUP = (data) =>{
             <input
               type="text"
               className="input input-bordered w-full max-w-xs"
-              {...register('name', {required: true})}
+              {...register("name", { required: true })}
             />
           </div>
           <div className="form-control w-full max-w-xs">
@@ -34,9 +60,11 @@ const handleSignUP = (data) =>{
             <input
               type="email"
               className="input input-bordered w-full max-w-xs"
-              {...register('email', {required: 'Email is required'})}
+              {...register("email", { required: "Email is required" })}
             />
-            {errors.email && <span className="text-error">{errors.email?.message}</span>}
+            {errors.email && (
+              <span className="text-error">{errors.email?.message}</span>
+            )}
             {}
           </div>
 
@@ -48,14 +76,30 @@ const handleSignUP = (data) =>{
             <input
               type="password"
               className="input input-bordered w-full max-w-xs"
-              {...register('password', {required: 'Password is required', minLength:{value: 6, message:'Password must be at least 6 character long'}})}
+              {...register("password", {
+                required: "Password is required",
+                minLength: {
+                  value: 6,
+                  message: "Password must be at least 6 character long",
+                },
+                pattern: {
+                  value: /(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$&*])(?=.*[0-9])/,
+                  message: "Password must be strong",
+                },
+              })}
             />
-            {errors.password && <span className="text-error">{errors.password?.message}</span>}
+            <p className="text-gray-700 mt-2 text-xs">
+              Note: Password should be one Capital letter, one small letter, one
+              special character and one number
+            </p>
+            {errors.password && (
+              <span className="text-error">{errors.password?.message}</span>
+            )}
           </div>
-
+          {signUpError && <span className="text-error">{signUpError}</span>}
           <input
             className="btn mt-8 btn-accent w-full"
-            value="Login"
+            value="Sign up"
             type="submit"
           />
         </form>
