@@ -28,6 +28,8 @@ const BookingModal = ({ treatment, selectedDate, setTreatment }) => {
 
         console.log(booking)
         setTreatment(null);
+        // console.log(7 > 6 &amp&amp, 8 < 6 &amp&amp, 6 > 4)
+        
     }
 
   return (
@@ -62,18 +64,21 @@ const BookingModal = ({ treatment, selectedDate, setTreatment }) => {
               type="text"
               placeholder="Your Name"
               className="input w-full input-bordered"
+              required
             />
             <input
               name="email"
               type="email"
               placeholder="Email Address"
               className="input w-full input-bordered"
+              required
             />
             <input
               name="phone"
               type="phone"
               placeholder="Phone Number"
               className="input w-full input-bordered"
+              required
             />
             <br />
             <input
