@@ -4,14 +4,18 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/AuthProvider";
 
 const Login = () => {
+  
+  const {signIn, googleSignIn} = useContext(AuthContext);
+
   const { register, formState:{ errors }, handleSubmit } = useForm();
-  const {signIn} = useContext(AuthContext);
   const [loginError, setLoginError] = useState('');
   const location = useLocation();
   const navigate = useNavigate();
   const from = location.state?.from?.pathname || '/';
 
+
   const handleLogin = data =>{
+   
      const {email, password} = data;
     setLoginError('');
      signIn(email, password)
@@ -24,6 +28,18 @@ const Login = () => {
         setLoginError(err.message) 
         console.error(err)});
   }
+
+  const handleGoogleSignIn = () =>{
+    googleSignIn()
+    .then((result) => {
+      const user = result.user;
+      console.log(user);
+    })
+    .catch(err => {
+      console.error(err)
+      setLoginError(err.message)
+    })
+    }
 
   return (
     <div className="h-[800px]  flex justify-center items-center">
@@ -55,7 +71,7 @@ const Login = () => {
         </form>
         <p className="text-sm mt-3">New to Doctors Portal? <Link to='/signup' className="text-secondary font-semibold">Create new account</Link></p>
         <div className="divider my-4">OR</div>
-        <button className="btn btn-outline w-full">CONTINUE WITH GOOGLE</button>
+        <button onClick={handleGoogleSignIn} className="btn btn-outline w-full">CONTINUE WITH GOOGLE</button>
       </div>
     </div>
   );

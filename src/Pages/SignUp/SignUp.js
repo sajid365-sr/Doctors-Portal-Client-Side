@@ -1,40 +1,60 @@
 import React, { useContext, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../../contexts/AuthProvider";
 import toast from "react-hot-toast";
 
 const SignUp = () => {
-  const { createUser, updateUser } = useContext(AuthContext);
+  const { createUser, updateUser, googleSignIn } = useContext(AuthContext);
   const [signUpError, setSignUpError] = useState("");
+  const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
+
+ 
   const handleSignUP = (data) => {
     const { name, email, password } = data;
     setSignUpError("");
     createUser(email, password)
       .then((result) => {
         const user = result.user;
-        console.log(user);
+        
         if (user) {
           toast.success("User created successfully");
+          
         }
         const userInfo = {
           displayName: name,
         };
         updateUser(userInfo)
-          .then(() => {})
+          .then(() => {
+            navigate('/');
+          })
           .catch((err) => {
             setSignUpError(err.message);
-            console.error(err);
+            
           });
       })
-      .catch((err) => console.error(err));
+      .catch((err) => {
+        setSignUpError(err.message);
+      });
   };
+
+  const handleGoogleSignIn = () =>{
+    googleSignIn()
+    .then((result) => {
+      const user = result.user;
+      console.log(user);
+    })
+    .catch(err => {
+      console.error(err)
+      setSignUpError(err.message)
+    })
+    }
 
   return (
     <div className="h-[800px]  flex justify-center items-center">
@@ -110,7 +130,7 @@ const SignUp = () => {
           </Link>
         </p>
         <div className="divider my-4">OR</div>
-        <button className="btn btn-outline w-full">CONTINUE WITH GOOGLE</button>
+        <button onClick={handleGoogleSignIn} className="btn btn-outline w-full">CONTINUE WITH GOOGLE</button>
       </div>
     </div>
   );
