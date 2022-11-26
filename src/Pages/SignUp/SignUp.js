@@ -3,11 +3,20 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { AuthContext } from "../../contexts/AuthProvider";
 import toast from "react-hot-toast";
+import useToken from "../../hooks/useToken";
 
 const SignUp = () => {
   const { createUser, updateUser, googleSignIn } = useContext(AuthContext);
   const [signUpError, setSignUpError] = useState("");
   const navigate = useNavigate();
+
+  const [createdUserEmail, setCreatedUserEmail] = useState('');
+  const [token] = useToken(createdUserEmail);
+
+
+  if(token){
+    navigate('/');
+  }
 
   const {
     register,
@@ -17,22 +26,26 @@ const SignUp = () => {
 
  
   const handleSignUP = (data) => {
-    const { name, email, password } = data;
     setSignUpError("");
+    const { name, email, password } = data;
+
     createUser(email, password)
       .then((result) => {
-        const user = result.user;
+       
         
-        if (user) {
+        if (result.user) {
           toast.success("User created successfully");
           
         }
         const userInfo = {
           displayName: name,
         };
+
+        // Update user name
         updateUser(userInfo)
           .then(() => {
-            navigate('/');
+            saveUser(name, email)
+            
           })
           .catch((err) => {
             setSignUpError(err.message);
@@ -44,12 +57,33 @@ const SignUp = () => {
       });
   };
 
+  // Save user info to Database
+  const saveUser = (name, email) =>{
+    const user = {name, email};
+    fetch('http://localhost:5000/users', {
+      method:'post',
+      headers:{
+        'content-type':'application/json'
+      },
+      body:JSON.stringify(user)
+    })
+    .then(res => res.json())
+    .then(data => {
+      
+      if(data.acknowledged){
+        setCreatedUserEmail(email);
+      }
+    })
+  }
+
+
+
+  // Google sign in
   const handleGoogleSignIn = () =>{
     googleSignIn()
     .then((result) => {
-      const user = result.user;
-      console.log(user);
-      navigate('/');
+    
+  
     })
     .catch(err => {
       console.error(err)
