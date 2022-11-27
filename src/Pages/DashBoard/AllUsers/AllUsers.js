@@ -1,14 +1,29 @@
 
 import { useQuery } from '@tanstack/react-query';
-import React from 'react';
+import React, { useContext } from 'react';
 import toast from 'react-hot-toast';
+import { AuthContext } from '../../../contexts/AuthProvider';
 
 const AllUsers = () => {
+    const {logOut} = useContext(AuthContext);
+
+
     const { data: users = [], refetch } = useQuery({
         queryKey:['users'],
         queryFn: async() => {
-            const res = await fetch('http://localhost:5000/users');
+            const res = await fetch('http://localhost:5000/users',{
+                headers:{
+                    authorization: `Bearer ${localStorage.getItem('AccessToken')}`
+                }
+            });
             const data = await res.json()
+            if(data.message === 'Forbidden access'){
+                logOut()
+                .then( () =>{
+        
+                })
+                .catch(err => console.error(err))
+              }
             return data;
         } 
     })
@@ -50,7 +65,7 @@ const handleMakeAdmin = (id) =>{
       
     
       {
-          users.map((user,i) => <tr key={user._id} className="hover">
+          users?.map((user,i) => <tr key={user._id} className="hover">
           
           <td>{i+1}</td>
           <td>{user.name}</td>
