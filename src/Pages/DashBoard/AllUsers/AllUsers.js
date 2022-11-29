@@ -37,7 +37,7 @@ const handleMakeAdmin = (id) =>{
     })
     .then(res => res.json())
     .then(data => {
-        console.log(data)
+        
         if(data.modifiedCount > 0){
             toast.success('Make admin successfully')
             refetch();

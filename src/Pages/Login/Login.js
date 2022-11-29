@@ -27,8 +27,7 @@ const Login = () => {
     setLoginError('');
      signIn(email, password)
      .then((result) => {
-         const user = result.user;
-         console.log(user);
+        
          setLoginUserEmail(email);
          
      })
@@ -40,8 +39,6 @@ const Login = () => {
   const handleGoogleSignIn = () =>{
     googleSignIn()
     .then((result) => {
-      const user = result.user;
-      console.log(user);
      
     })
     .catch(err => {

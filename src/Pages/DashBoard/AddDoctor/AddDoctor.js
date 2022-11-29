@@ -46,7 +46,7 @@ const AddDoctor = () => {
       .then((res) => res.json())
       .then((imgData) => {
         if (imgData.success) {
-          console.log(imgData.data.url);
+          
 
           const doctor = {
             name,

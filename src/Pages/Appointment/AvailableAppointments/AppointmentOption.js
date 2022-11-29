@@ -2,7 +2,7 @@ import React from "react";
 import SecondaryText from "../../../components/SecondaryText/SecondaryText";
 
 const AppointmentOption = ({ appointmentOption, setTreatment}) => {
-  const { name, slots } = appointmentOption;
+  const { name, slots, price } = appointmentOption;
 
   return (
     <div className="card lg:w-[425px] w-10/12 mx-auto shadow-xl">
@@ -12,6 +12,7 @@ const AppointmentOption = ({ appointmentOption, setTreatment}) => {
             {slots.length > 0 ? slots[0] : 'Try Another Day'}
         </p>
         <p className="text-center"> {slots.length} {slots.length > 1 ? 'spaces' : 'space'} available</p>
+        <p className="text-center"><small>Price: ${price}</small></p>
         <div className="card-actions mt-8 justify-center">
 
         <label 
