@@ -81,7 +81,7 @@ const router = createBrowserRouter([
         element:<PrivateRoute>
           <Payment></Payment>
         </PrivateRoute>,
-        loader: ({params}) =>  fetch(`http://localhost:5000/bookings/${params.id}`)
+        loader: ({params}) =>  fetch(`https://doctors-portal-server-side-gray.vercel.app/bookings/${params.id}`)
       }
       
     ],

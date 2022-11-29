@@ -13,7 +13,8 @@ const CheckOutForm = ({ booking }) => {
 
   useEffect(() => {
     // Create PaymentIntent as soon as the page loads
-    fetch("http://localhost:5000/create-payment-intent", {
+    // Get client secret from backend by fetch api
+    fetch("https://doctors-portal-server-side-gray.vercel.app/create-payment-intent", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -47,8 +48,9 @@ const CheckOutForm = ({ booking }) => {
       setCardError("");
     }
 
-    setSuccess('');
+    setSuccess("");
     setProcessing(true);
+    // Get client secret from backend
     const { paymentIntent, error: confirmError } =
       await stripe.confirmCardPayment(clientSecret, {
         payment_method: {
@@ -60,44 +62,41 @@ const CheckOutForm = ({ booking }) => {
           },
         },
       });
-      if(confirmError){
-        setCardError(confirmError)
-        return;
-      }
+    if (confirmError) {
+      setCardError(confirmError);
+      return;
+    }
+
+    
+    if (paymentIntent.status === "succeeded") {
       
-      if(paymentIntent.status === "succeeded"){
-       console.log('card info', card)
-        const payment = {
-          price,
-          TnxId: paymentIntent.id,
-          email,
-          bookingId:_id
+      const payment = { // make payment object for save to db if payment is successful.
+        price,
+        TnxId: paymentIntent.id,
+        email,
+        bookingId: _id,
+      };
 
-        }
-
-
-        // Store payment info in the database.........
-        fetch('http://localhost:5000/payments', {
-          method:'POST',
-          headers:{
-            'content-type':'application/json',
-            authorization:`Bearer ${localStorage.getItem('AccessToken')}`
-          },
-          body:JSON.stringify(payment)
-        })
-        .then(res => res.json())
-        .then(data => {
-          if(data.insertedId){
-            console.log(data)
-            setSuccess('Congrats! your payment completed');
+      // Store payment info in the database.........
+      fetch("https://doctors-portal-server-side-gray.vercel.app/payments", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          authorization: `Bearer ${localStorage.getItem("AccessToken")}`,
+        },
+        body: JSON.stringify(payment),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.insertedId) {
+            
+            setSuccess("Congrats! your payment completed");
             setTransactionId(paymentIntent.id);
           }
-        })
-        
-      }
+        });
+    }
 
-      setProcessing(false);
-      
+    setProcessing(false);
   };
 
   return (
@@ -128,12 +127,15 @@ const CheckOutForm = ({ booking }) => {
         </button>
       </form>
       <p className="text-error">{cardError}</p>
-      {
-        success && <div>
+      {success && (
+        <div>
           <p className="text-success">{success}</p>
-          <p>Your Transaction ID: <span className="font-bold">{transactionId}</span></p>
+          <p>
+            Your Transaction ID:{" "}
+            <span className="font-bold">{transactionId}</span>
+          </p>
         </div>
-      }
+      )}
     </>
   );
 };
