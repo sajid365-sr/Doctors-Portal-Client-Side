@@ -14,12 +14,14 @@ import DisplayError from "../../Pages/Shared/DisplayError/DisplayError";
 import SignUp from "../../Pages/SignUp/SignUp";
 import AdminRoute from "../AdminRoute/AdminRoute";
 import PrivateRoute from "../PrivateRoute/PrivateRoute";
+import ContactUs from "../../Pages/ContactUs/ContactUs";
+import About from "../../Pages/About/About";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Main></Main>,
-    errorElement:<DisplayError></DisplayError>,
+    errorElement: <DisplayError></DisplayError>,
     children: [
       {
         path: "/",
@@ -28,6 +30,14 @@ const router = createBrowserRouter([
       {
         path: "/login",
         element: <Login></Login>,
+      },
+      {
+        path: "/about",
+        element: <About></About>,
+      },
+      {
+        path: "/contactUs",
+        element: <ContactUs></ContactUs>,
       },
       {
         path: "/appointment",
@@ -46,7 +56,7 @@ const router = createBrowserRouter([
         <DashBoardLayout></DashBoardLayout>
       </PrivateRoute>
     ),
-    errorElement:<DisplayError></DisplayError>,
+    errorElement: <DisplayError></DisplayError>,
     children: [
       {
         path: "/dashboard",
@@ -77,13 +87,15 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path:'/dashboard/payment/:id',
-        element:<PrivateRoute>
-          <Payment></Payment>
-        </PrivateRoute>,
-        loader: ({params}) =>  fetch(`https://doctors-portal-server-side-gray.vercel.app/bookings/${params.id}`)
-      }
-      
+        path: "/dashboard/payment/:id",
+        element: (
+          <PrivateRoute>
+            <Payment></Payment>
+          </PrivateRoute>
+        ),
+        loader: ({ params }) =>
+          fetch(`http://localhost:5000/bookings/${params.id}`),
+      },
     ],
   },
 ]);

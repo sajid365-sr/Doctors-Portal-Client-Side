@@ -18,7 +18,7 @@ const Login = () => {
   const token = useToken(loginUserEmail);
   
   if(token){
-    navigate(from , {relative: true});
+    navigate(from , {replace: true});
   }
 
   const handleLogin = data =>{

@@ -14,9 +14,9 @@ const SignUp = () => {
   const [token] = useToken(createdUserEmail);
 
 
-  if(token){
-    navigate('/');
-  }
+    if(token){
+      navigate('/');
+    }
 
   const {
     register,
@@ -60,7 +60,7 @@ const SignUp = () => {
   // Save user info to Database
   const saveUser = (name, email) =>{
     const user = {name, email};
-    fetch('https://doctors-portal-server-side-gray.vercel.app/users', {
+    fetch('http://localhost:5000/users', {
       method:'post',
       headers:{
         'content-type':'application/json'
