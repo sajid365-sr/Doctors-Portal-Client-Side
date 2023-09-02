@@ -7,7 +7,6 @@ import { AuthContext } from "../../../contexts/AuthProvider";
 import Loading from "../../Shared/Loading/Loading";
 
 const AddDoctor = () => {
-
   const { logOut } = useContext(AuthContext);
   const {
     register,
@@ -22,7 +21,9 @@ const AddDoctor = () => {
   const { data: specialties = [], isLoading } = useQuery({
     queryKey: ["specialty"],
     queryFn: async () => {
-      const res = await fetch("http://localhost:5000/appointmentSpecialty");
+      const res = await fetch(
+        "https://doctors-portal-server-sajid365-sr.vercel.app/appointmentSpecialty"
+      );
       const data = res.json();
       return data;
     },
@@ -46,8 +47,6 @@ const AddDoctor = () => {
       .then((res) => res.json())
       .then((imgData) => {
         if (imgData.success) {
-          
-
           const doctor = {
             name,
             email,
@@ -56,22 +55,23 @@ const AddDoctor = () => {
           };
 
           // Save the doctor to the db
-          fetch("http://localhost:5000/doctors", {
-            method: "post",
-            headers: {
-              "content-type": "application/json",
-              authorization: `Bearer ${localStorage.getItem("AccessToken")}`,
-            },
-            body: JSON.stringify(doctor),
-          })
+          fetch(
+            "https://doctors-portal-server-sajid365-sr.vercel.app/doctors",
+            {
+              method: "post",
+              headers: {
+                "content-type": "application/json",
+                authorization: `Bearer ${localStorage.getItem("AccessToken")}`,
+              },
+              body: JSON.stringify(doctor),
+            }
+          )
             .then((res) => res.json())
             .then((result) => {
-              if(result.message === 'Forbidden access'){
+              if (result.message === "Forbidden access") {
                 logOut()
-                .then( () =>{
-        
-                })
-                .catch(err => console.error(err))
+                  .then(() => {})
+                  .catch((err) => console.error(err));
               }
               if (result.acknowledged) {
                 toast.success(`${name} added successfully and a new doctor`);
@@ -138,10 +138,17 @@ const AddDoctor = () => {
                 ></path>
               </svg>
               <p className="mb-2 text-sm text-gray-500">
-                <span className="font-semibold">Click to upload Doctors photo</span>
+                <span className="font-semibold">
+                  Click to upload Doctors photo
+                </span>
               </p>
             </div>
-            <input id="dropzone-file" type="file" className="hidden"  {...register("image", { required: true })} />
+            <input
+              id="dropzone-file"
+              type="file"
+              className="hidden"
+              {...register("image", { required: true })}
+            />
           </label>
           {errors.image && (
             <span className="text-error">{errors.image?.message}</span>

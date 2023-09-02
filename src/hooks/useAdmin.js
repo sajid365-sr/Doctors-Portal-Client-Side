@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 
 const useAdmin = (email) => {
@@ -7,12 +6,13 @@ const useAdmin = (email) => {
 
   useEffect(() => {
     if (email) {
-      fetch(`http://localhost:5000/users/admin/${email}`)
+      fetch(
+        `https://doctors-portal-server-sajid365-sr.vercel.app/users/admin/${email}`
+      )
         .then((res) => res.json())
         .then((data) => {
-         
           setIsAdmin(data.isAdmin);
-          setIsAdminLoading(false)
+          setIsAdminLoading(false);
         });
     }
   }, [email]);

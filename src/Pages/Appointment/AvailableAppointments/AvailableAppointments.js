@@ -6,24 +6,27 @@ import BookingModal from "../BookingModal/BookingModal";
 import AppointmentOption from "./AppointmentOption";
 
 const AvailableAppointments = ({ selectedDate }) => {
-  
   const [treatment, setTreatment] = useState(null);
-  const date = format(selectedDate, 'PP')
+  const date = format(selectedDate, "PP");
 
-  const {data: appointmentOptions = [], refetch, isLoading} = useQuery({
-    queryKey:['appointmentOptions', date],
-    queryFn: async() => {
-      const res = await fetch(`http://localhost:5000/appointmentOptions?date=${date}`);
+  const {
+    data: appointmentOptions = [],
+    refetch,
+    isLoading,
+  } = useQuery({
+    queryKey: ["appointmentOptions", date],
+    queryFn: async () => {
+      const res = await fetch(
+        `https://doctors-portal-server-sajid365-sr.vercel.app/appointmentOptions?date=${date}`
+      );
       const data = await res.json();
-      return data
-    }
+      return data;
+    },
   });
 
-  if(isLoading){
-    return <Loading></Loading>
+  if (isLoading) {
+    return <Loading></Loading>;
   }
-
-
 
   return (
     <section className="mt-16">
@@ -40,13 +43,14 @@ const AvailableAppointments = ({ selectedDate }) => {
         ))}
       </div>
 
-      {treatment && 
-      <BookingModal 
-      selectedDate={selectedDate} 
-      treatment={treatment}
-      setTreatment={setTreatment}
-      refetch={refetch}
-      ></BookingModal>}
+      {treatment && (
+        <BookingModal
+          selectedDate={selectedDate}
+          treatment={treatment}
+          setTreatment={setTreatment}
+          refetch={refetch}
+        ></BookingModal>
+      )}
     </section>
   );
 };

@@ -9,11 +9,14 @@ const AllUsers = () => {
   const { data: users = [], refetch } = useQuery({
     queryKey: ["users"],
     queryFn: async () => {
-      const res = await fetch("http://localhost:5000/users", {
-        headers: {
-          authorization: `Bearer ${localStorage.getItem("AccessToken")}`,
-        },
-      });
+      const res = await fetch(
+        "https://doctors-portal-server-sajid365-sr.vercel.app/users",
+        {
+          headers: {
+            authorization: `Bearer ${localStorage.getItem("AccessToken")}`,
+          },
+        }
+      );
       const data = await res.json();
       if (data.message === "Forbidden access") {
         logOut()
@@ -25,12 +28,15 @@ const AllUsers = () => {
   });
 
   const handleMakeAdmin = (id) => {
-    fetch(`http://localhost:5000/users/admin/${id}`, {
-      method: "put",
-      headers: {
-        authorization: `bearer ${localStorage.getItem("AccessToken")}`,
-      },
-    })
+    fetch(
+      `https://doctors-portal-server-sajid365-sr.vercel.app/users/admin/${id}`,
+      {
+        method: "put",
+        headers: {
+          authorization: `bearer ${localStorage.getItem("AccessToken")}`,
+        },
+      }
+    )
       .then((res) => res.json())
       .then((data) => {
         if (data.modifiedCount > 0) {
@@ -43,12 +49,15 @@ const AllUsers = () => {
     const result = window.confirm("Are you sure you want to delete this user?");
 
     if (result) {
-      fetch(`http://localhost:5000/users/delete/${id}`, {
-        method: "delete",
-        headers: {
-          authorization: `bearer ${localStorage.getItem("AccessToken")}`,
-        },
-      })
+      fetch(
+        `https://doctors-portal-server-sajid365-sr.vercel.app/users/delete/${id}`,
+        {
+          method: "delete",
+          headers: {
+            authorization: `bearer ${localStorage.getItem("AccessToken")}`,
+          },
+        }
+      )
         .then((res) => res.json())
         .then((data) => {
           console.log(data);

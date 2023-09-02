@@ -10,13 +10,12 @@ const SignUp = () => {
   const [signUpError, setSignUpError] = useState("");
   const navigate = useNavigate();
 
-  const [createdUserEmail, setCreatedUserEmail] = useState('');
+  const [createdUserEmail, setCreatedUserEmail] = useState("");
   const [token] = useToken(createdUserEmail);
 
-
-    if(token){
-      navigate('/');
-    }
+  if (token) {
+    navigate("/");
+  }
 
   const {
     register,
@@ -24,18 +23,14 @@ const SignUp = () => {
     formState: { errors },
   } = useForm();
 
- 
   const handleSignUP = (data) => {
     setSignUpError("");
     const { name, email, password } = data;
 
     createUser(email, password)
       .then((result) => {
-       
-        
         if (result.user) {
           toast.success("User created successfully");
-          
         }
         const userInfo = {
           displayName: name,
@@ -44,12 +39,10 @@ const SignUp = () => {
         // Update user name
         updateUser(userInfo)
           .then(() => {
-            saveUser(name, email)
-            
+            saveUser(name, email);
           })
           .catch((err) => {
             setSignUpError(err.message);
-            
           });
       })
       .catch((err) => {
@@ -58,38 +51,32 @@ const SignUp = () => {
   };
 
   // Save user info to Database
-  const saveUser = (name, email) =>{
-    const user = {name, email};
-    fetch('http://localhost:5000/users', {
-      method:'post',
-      headers:{
-        'content-type':'application/json'
+  const saveUser = (name, email) => {
+    const user = { name, email };
+    fetch("https://doctors-portal-server-sajid365-sr.vercel.app/users", {
+      method: "post",
+      headers: {
+        "content-type": "application/json",
       },
-      body:JSON.stringify(user)
+      body: JSON.stringify(user),
     })
-    .then(res => res.json())
-    .then(data => {
-      
-      if(data.acknowledged){
-        setCreatedUserEmail(email);
-      }
-    })
-  }
-
-
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.acknowledged) {
+          setCreatedUserEmail(email);
+        }
+      });
+  };
 
   // Google sign in
-  const handleGoogleSignIn = () =>{
+  const handleGoogleSignIn = () => {
     googleSignIn()
-    .then((result) => {
-    
-  
-    })
-    .catch(err => {
-      console.error(err)
-      setSignUpError(err.message)
-    })
-    }
+      .then((result) => {})
+      .catch((err) => {
+        console.error(err);
+        setSignUpError(err.message);
+      });
+  };
 
   return (
     <div className="h-[800px]  flex justify-center items-center">
@@ -165,7 +152,9 @@ const SignUp = () => {
           </Link>
         </p>
         <div className="divider my-4">OR</div>
-        <button onClick={handleGoogleSignIn} className="btn btn-outline w-full">CONTINUE WITH GOOGLE</button>
+        <button onClick={handleGoogleSignIn} className="btn btn-outline w-full">
+          CONTINUE WITH GOOGLE
+        </button>
       </div>
     </div>
   );

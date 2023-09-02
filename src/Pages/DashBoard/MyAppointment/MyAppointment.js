@@ -8,7 +8,7 @@ import { toast } from "react-hot-toast";
 const MyAppointment = () => {
   const { user, logOut } = useContext(AuthContext);
 
-  const url = `http://localhost:5000/bookings?email=${user?.email}`;
+  const url = `https://doctors-portal-server-sajid365-sr.vercel.app/bookings?email=${user?.email}`;
   const {
     data: bookings = [],
     isLoading,
@@ -42,12 +42,15 @@ const MyAppointment = () => {
     );
 
     if (result) {
-      fetch(`http://localhost:5000/bookings/cancel/${id}`, {
-        method: "PUT",
-        headers: {
-          authorization: `bearer ${localStorage.getItem("AccessToken")}`,
-        },
-      })
+      fetch(
+        `https://doctors-portal-server-sajid365-sr.vercel.app/bookings/cancel/${id}`,
+        {
+          method: "PUT",
+          headers: {
+            authorization: `bearer ${localStorage.getItem("AccessToken")}`,
+          },
+        }
+      )
         .then((res) => res.json())
         .then((data) => {
           if (data.deletedCount > 0 && data.acknowledged) {
